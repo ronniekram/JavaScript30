@@ -58,24 +58,35 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
-  function removeTransition(e) {
-    if (e.propertyName !== 'transform') return;
-    e.target.classList.remove('playing');
-  }
+// function to select which sound is played
+function soundSelector(e) {
+  // selects audio element with specific keycode
+  const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`)
+  //selects div element for audio by keycode
+  const key = document.querySelector(`div[data-key="${e.keyCode}"]`);
+  // if a keydown occurs that is not connected to a sound, do nothing
+  if (!audio) return ;
+  // adds a class to key div called 'playing' to keep track of which sound is playing
+  key.classList.add('playing')
+  // allows to sound to play again immediately
+  audio.currentTime = 0;
+  // plays the sound
+  audio.play();
+}
 
-  function playSound(e) {
-    const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
-    const key = document.querySelector(`div[data-key="${e.keyCode}"]`);
-    if (!audio) return;
+function removeTransition(e) {
+  // if the event propertyName doesn't include 'transition', do nothing
+  if (e.propertyName !== 'transform') return;
+  //removes the playing class from target
+  e.target.classList.remove('playing');
+}
 
-    key.classList.add('playing');
-    audio.currentTime = 0;
-    audio.play();
-  }
-
-  const keys = Array.from(document.querySelectorAll('.key'));
-  keys.forEach(key => key.addEventListener('transitionend', removeTransition));
-  window.addEventListener('keydown', playSound);
+// creates an array of all elements with key attribute
+const keys = Array.from(document.querySelectorAll('.key'));
+// adds event listener for each key in keys array to remove transition
+keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+// adds event listener for keydown and sound play
+window.addEventListener('keydown', soundSelector);
 </script>
 
 
